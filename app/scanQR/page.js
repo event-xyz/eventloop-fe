@@ -139,7 +139,6 @@ const QRScannerPage = () => {
             <p>Scan successful!</p>
             <p>Name: {verified.user?.name || "NA"}</p>
             <p>Email: {verified.user?.email || "NA"}</p>
-            <p>Role: {verified.user?.role || "NA"}</p>
             <p>Status: {verified.message || "No message"}</p>
             <button
               className="mt-4 px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
