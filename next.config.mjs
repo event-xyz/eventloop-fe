@@ -5,7 +5,11 @@ const nextConfig = {
       config.resolve.fallback = {
         fs: false,
         net: false,
-        "fs/promises": false,
+        'fs/promises': false,
+        tls: false,  // Add this
+        child_process: false,  // Add this
+        readline: false,  // Add this
+        module: false,  // Add this
       };
     }
     return config;
