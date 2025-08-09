@@ -11,6 +11,7 @@ import { NavigationMenu } from "@/components/ui/navigation-menu";
 import { GoogleLogin } from "@react-oauth/google";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Loading } from "@/components/ui/loading";
+import Image from "next/image";
 
 export default function Home() {
   const [alert, setAlert] = useState({
@@ -20,6 +21,7 @@ export default function Home() {
   });
   const [user, setUser] = useState(null); // authenticated user info
   const [loading, setLoading] = useState(true);
+  const [qrCode, setQrCode] = useState(null); // State to hold the QR code base64 string
 
   useEffect(() => {
     if (alert.visible) {
@@ -78,11 +80,13 @@ export default function Home() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          setQrCode(data.user.qr_string);
           setAlert({
             visible: true,
             message: `Successfully logged in as ${data.user.role}`,
             variant: "success",
           });
+          // Fetch the QR code after login
         } else {
           setAlert({
             visible: true,
@@ -126,6 +130,7 @@ export default function Home() {
           message: "Logged out.",
           variant: "success",
         });
+        setQrCode(null); // Clear QR code on logout
       } else {
         throw new Error("Logout failed");
       }
@@ -212,11 +217,6 @@ export default function Home() {
       {user ? <Navbar role={user.role} /> : <></>}
 
       <div className="mt-4">
-        {/* check if `loading` is true.
-            if true, then display `Loading session...`
-            Once loading session (i.e, response from backend endpoint `/refresh` is obtained) and the user is null, then ask them to sign-in/sign-up.
-            Else, if there is a user detail fetched, then show appropriate page.
-        */}
         {loading ? (
           <Loading />
         ) : !user ? (
@@ -229,6 +229,14 @@ export default function Home() {
             <p className="text-sm text-muted-foreground">
               Logged in as <strong>{user.name}</strong> ({user.role})
             </p>
+            {/* Display QR Code after login */}
+            <div className="mt-6 flex justify-center">
+              <img
+                src={qrCode}
+                alt="QR Code"
+                className="w-64 h-64 border border-gray-300 rounded"
+              />
+            </div>
             <button
               onClick={handleLogout}
               className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 w-fit text-sm"

@@ -84,7 +84,7 @@ export default function ServeForm() {
 
     setSubmitting(false);
 
-    router.push(`${window.location.hostname}/applicationStatus/:formResponseID`);
+    router.push(`${window.location.hostname}/applicationStatus/${formData.docID}`);
   };
 
   // Render the form fields dynamically based on the form data
