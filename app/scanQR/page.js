@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Button, Input, Card, CardContent, CardHeader } from "shadcn";
-import { BarcodeScanner } from "@zxing/library";
+import dynamic from "next/dynamic";
 
 const QRScannerPage = () => {
   const [scanResult, setScanResult] = useState(null);
@@ -13,7 +13,10 @@ const QRScannerPage = () => {
   // Start QR code scanning
   const startScanning = () => {
     if (scanner) return; // If scanner already initialized, don't reinit
-    const codeReader = new BarcodeScanner();
+    const codeReader = dynamic(
+      () => import("@zxing/library").then((mod) => new mod.BarcodeScanner()),
+      { srr: false }
+    );
 
     // Set up video feed
     const videoElement = videoRef.current;
