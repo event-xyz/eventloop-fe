@@ -17,19 +17,25 @@ const QRScannerPage = () => {
       setErrorMessage("");
 
       setFetching(true);
-      const backendScanData = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/verifyQR`,
-        {
-          method: "POST",
-          body: JSON.stringify({ qr_string: qrString }),
-          headers: { "Content-Type": "application/json" },
-          credentials: "include"
-        }
-      );
+      try {
+        const backendScanData = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/verifyQR`,
+          {
+            method: "POST",
+            body: JSON.stringify({ qr_string: qrString }),
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          }
+        );
 
-      const backendData = await backendScanData.json();
-      setFetching(false);
-      
+        const backendData = await backendScanData.json();
+        setScanResult(JSON.stringify(backendData));
+      } catch (error) {
+        setErrorMessage("Something went wrong!");
+      } finally {
+        setFetching(false);
+      }
+
       if (backendData) {
         console.log(backendData);
         setScanResult(JSON.stringify(backendData));
@@ -60,7 +66,7 @@ const QRScannerPage = () => {
   }, []);
 
   if (fetching) {
-    return <Loading/>
+    return <Loading />;
   }
 
   return (
