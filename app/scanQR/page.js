@@ -11,38 +11,40 @@ const QRScannerPage = () => {
   const videoRef = useRef(null);
 
   // Handle successful QR scan
-  const handleScan = async (qrString) => {
-    // Only proceed if the QR string is new
-    if (qrString && qrString !== scanResult) {
-      setScanResult(qrString); // Update scan result to prevent re-scanning same QR
-      setErrorMessage(""); // Clear any previous errors
+  useEffect(() => {
+    const handleScan = async (qrString) => {
+      // Only proceed if the QR string is new
+      if (qrString && qrString !== scanResult) {
+        setScanResult(qrString); // Update scan result to prevent re-scanning same QR
+        setErrorMessage(""); // Clear any previous errors
 
-      setFetching(true);
-      try {
-        const backendScanData = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/verifyQR`,
-          {
-            method: "POST",
-            body: JSON.stringify({ qr_string: qrString }),
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
+        setFetching(true);
+        try {
+          const backendScanData = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/verifyQR`,
+            {
+              method: "POST",
+              body: JSON.stringify({ qr_string: qrString }),
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            }
+          );
+
+          // Ensure the backend response is valid
+          const backendData = await backendScanData.json();
+          if (backendScanData.ok) {
+            setScanResult(JSON.stringify(backendData)); // Only update if response is valid
+          } else {
+            setErrorMessage("Failed to authenticate QR.");
           }
-        );
-
-        // Ensure the backend response is valid
-        const backendData = await backendScanData.json();
-        if (backendScanData.ok) {
-          setScanResult(JSON.stringify(backendData)); // Only update if response is valid
-        } else {
-          setErrorMessage("Failed to authenticate QR.");
+        } catch (error) {
+          setErrorMessage("Something went wrong!");
+        } finally {
+          setFetching(false); // End loading state
         }
-      } catch (error) {
-        setErrorMessage("Something went wrong!");
-      } finally {
-        setFetching(false); // End loading state
       }
-    }
-  };
+    };
+  });
 
   // Handle scan error
   const handleError = (err) => {
@@ -55,16 +57,21 @@ const QRScannerPage = () => {
       const codeReader = new BrowserMultiFormatReader();
       codeReader
         .decodeFromVideoDevice(null, videoRef.current, (result, err) => {
-          if (result) {
-            handleScan(result.getText());
+          if (result && result.getText() !== scanResult) {
+            handleScan(result.getText()); // Only scan if QR string is new
           }
           if (err) {
             handleError(err);
           }
         })
         .catch((err) => handleError(err));
+
+      return () => {
+        // Clean up the scanner when the component is unmounted
+        codeReader.reset();
+      };
     }
-  }, []);
+  }, [scanResult]); // Only re-run if `scanResult` changes
 
   if (fetching) {
     return <Loading />;
