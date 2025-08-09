@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { Button, Card, CardContent, CardHeader } from "shadcn";
-import ReactQrReader from "react-qr-scanner";
+import dynamic from "next/dynamic";
+
+// Dynamically import the ReactQrReader component with SSR disabled
+const ReactQrReader = dynamic(() => import("react-qr-scanner"), { ssr: false });
 
 const QRScannerPage = () => {
   const [scanResult, setScanResult] = useState(null);
@@ -47,6 +50,7 @@ const QRScannerPage = () => {
         <CardContent>
           {/* QR Scan Display Section */}
           <div className="mb-4">
+            {/* Dynamically loaded QR scanner */}
             <ReactQrReader
               delay={300}
               style={{
