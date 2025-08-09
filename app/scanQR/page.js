@@ -12,9 +12,10 @@ const QRScannerPage = () => {
 
   // Handle successful QR scan
   const handleScan = async (qrString) => {
-    if (qrString) {
-      setScanResult(qrString);
-      setErrorMessage("");
+    // Only proceed if the QR string is new
+    if (qrString && qrString !== scanResult) {
+      setScanResult(qrString); // Update scan result to prevent re-scanning same QR
+      setErrorMessage(""); // Clear any previous errors
 
       setFetching(true);
       try {
@@ -28,17 +29,17 @@ const QRScannerPage = () => {
           }
         );
 
+        // Ensure the backend response is valid
         const backendData = await backendScanData.json();
-        setScanResult(JSON.stringify(backendData));
+        if (backendScanData.ok) {
+          setScanResult(JSON.stringify(backendData)); // Only update if response is valid
+        } else {
+          setErrorMessage("Failed to authenticate QR.");
+        }
       } catch (error) {
         setErrorMessage("Something went wrong!");
       } finally {
-        setFetching(false);
-      }
-
-      if (backendData) {
-        console.log(backendData);
-        setScanResult(JSON.stringify(backendData));
+        setFetching(false); // End loading state
       }
     }
   };
