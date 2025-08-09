@@ -1,72 +1,41 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Button, Input, Card, CardContent, CardHeader } from "shadcn";
-import dynamic from "next/dynamic";
+import { useState } from "react";
+import { Button, Card, CardContent, CardHeader } from "shadcn";
+import ReactQrReader from "react-qr-scanner";
 
 const QRScannerPage = () => {
   const [scanResult, setScanResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const videoRef = useRef(null); // Reference for video stream
-  const [scanner, setScanner] = useState(null);
 
-  // Start QR code scanning
-  const startScanning = () => {
-    if (scanner) return; // If scanner already initialized, don't reinit
-    const codeReader = dynamic(
-      () => import("@zxing/library").then((mod) => new mod.BarcodeScanner()),
-      { srr: false }
-    );
-
-    // Set up video feed
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
-
-    // Start scanning the video feed
-    codeReader
-      .decodeFromVideoDevice(null, videoElement, (result, err) => {
-        if (result) {
-          // If QR code is scanned successfully
-          setScanResult(result.getText());
-          setErrorMessage("");
-          codeReader.reset(); // Stop scanning once QR is decoded
-          (scanResult) => {
-            // For example, send the data to your backend to verify it
-            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/verifyQR`, {
-              method: "POST",
-              body: JSON.stringify({ qr_string: scanResult }),
-              headers: { "Content-Type": "application/json" },
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (data.success) {
-                  alert("QR Data verified successfully");
-                } else {
-                  alert("Invalid QR Data");
-                }
-              });
-          };
-        }
-        if (err && !result) {
-          setErrorMessage("Error scanning QR code. Please try again.");
-        }
+  // Handle successful QR scan
+  const handleScan = (data) => {
+    if (data) {
+      setScanResult(data.text);
+      setErrorMessage(""); // Clear any previous error messages
+      // Send data to backend to verify the QR
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/verifyQR`, {
+        method: "POST",
+        body: JSON.stringify({ qr_string: data.text }),
+        headers: { "Content-Type": "application/json" },
       })
-      .then(() => {
-        setScanner(codeReader);
-      })
-      .catch((err) => {
-        setErrorMessage("Unable to start QR scanner: " + err.message);
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            alert("QR Data verified successfully");
+          } else {
+            alert("Invalid QR Data");
+          }
+        })
+        .catch((err) => {
+          setErrorMessage("Error verifying QR: " + err.message);
+        });
+    }
   };
 
-  // Stop the scanning process
-  const stopScanning = () => {
-    if (scanner) {
-      scanner.reset();
-      setScanner(null);
-      setScanResult(null);
-      setErrorMessage("");
-    }
+  // Handle scan error
+  const handleError = (err) => {
+    setErrorMessage("Error scanning QR code: " + err.message);
   };
 
   return (
@@ -78,16 +47,16 @@ const QRScannerPage = () => {
         <CardContent>
           {/* QR Scan Display Section */}
           <div className="mb-4">
-            <video
-              ref={videoRef}
-              width="100%"
-              height="auto"
+            <ReactQrReader
+              delay={300}
               style={{
+                width: "100%",
+                height: "auto",
                 borderRadius: "8px",
                 boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
               }}
-              autoPlay
-              muted
+              onScan={handleScan}
+              onError={handleError}
             />
           </div>
 
@@ -107,12 +76,7 @@ const QRScannerPage = () => {
 
           {/* Controls */}
           <div className="mt-6 space-x-4">
-            <Button onClick={startScanning} disabled={scanner}>
-              Start Scanning
-            </Button>
-            <Button onClick={stopScanning} disabled={!scanner}>
-              Stop Scanning
-            </Button>
+            {/* The scanner works immediately after the camera is loaded */}
           </div>
         </CardContent>
       </Card>
