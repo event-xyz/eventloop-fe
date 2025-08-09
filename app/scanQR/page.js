@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef } from "react";
 import { Button, Input, Card, CardContent, CardHeader } from "shadcn";
 import { BarcodeScanner } from "@zxing/library";
