@@ -208,7 +208,7 @@ export default function Home() {
 
       <Card className="hover:bg-slate-100 transition duration-200 ease-in-out">
         <CardHeader>
-          <CardTitle>Welcome to Event-Loop</CardTitle>
+          <CardTitle>Welcome to Eventloop</CardTitle>
           <CardDescription>
             Get started with creating your event
           </CardDescription>
