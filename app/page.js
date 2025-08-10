@@ -232,11 +232,15 @@ export default function Home() {
             </p>
             {/* Display QR Code after login */}
             <div className="mt-6 flex justify-center">
-              <img
-                src={qrCode}
-                alt="QR Code"
-                className="w-64 h-64 border border-gray-300 rounded"
-              />
+              {user.role == "participant" ? (
+                <Image
+                  src={qrCode}
+                  alt="QR Code"
+                  className="w-64 h-64 border border-gray-300 rounded"
+                />
+              ) : (
+                <></>
+              )}
             </div>
             <button
               onClick={handleLogout}
