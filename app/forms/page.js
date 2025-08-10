@@ -40,7 +40,7 @@ export default function FormsPage() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-semibold text-center mb-6">Form Management</h1>
-      {forms.length === 0 ? (
+      {forms.length === 0 || !forms ? (
         <p className="text-xl text-center text-gray-500">No forms available.</p>
       ) : (
         <div className="overflow-x-auto">

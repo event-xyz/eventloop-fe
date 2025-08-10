@@ -48,6 +48,7 @@ export default function Home() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          setQrCode(data.user.qr_string);
         } else {
           setUser(null);
         }
