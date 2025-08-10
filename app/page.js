@@ -81,7 +81,7 @@ export default function Home() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
-          setQrCode(data.user.qr_string);
+          if (data.user.role == 'participant') setQrCode(data.user.qr_string);
           setAlert({
             visible: true,
             message: `Successfully logged in as ${data.user.role}`,
