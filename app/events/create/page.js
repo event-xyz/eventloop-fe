@@ -36,7 +36,7 @@ export default function CreateEvent() {
 
       const data = await response.json();
       if (response.ok) {
-        alert(`Event Created: ${data.event_id}`);
+        alert(`Event Created: ${data.event_id}\nForm link: ${process.env.NEXT_PUBLIC_BACKEND_URL}/forms/${data.form_id}/submit`);
       } else {
         alert("Error creating event: " + data.error);
       }
