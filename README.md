@@ -1,8 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Eventloop - Frontend
+
+> This project is a part of Tilde 4.0 HSP PES-ECC's summer mentoring program.
+
+## Mentees
+- [Lalith B Seervi](https://github.com/lalithbseervi)
+
+## Mentors
+- [Aditya Hegde](https://github.com/bwaklog)
+- [Akshaj](https://github.com/unhexate)
+- [Nathan](https://github.com/polarhive)
+- [Tejas](https://github.com/tejas-techstack)
 
 ## Getting Started
 
-First, run the development server:
+### Setting environment variables
+
+Set the `NEXT_PUBLIC_BACKEND_URL` according to whether you are running the project locally or deploying it.
+
+Next, refer to [this section](https://github.com/homebrew-ec-foss/eventloop/#google-oauth-client) to set the `GOOGLE_CLIENT_ID`.
+
+## Running the project
+
+### Development / Local Server
 
 ```bash
 npm run dev
@@ -14,11 +33,13 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Deploying on Vercel
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+You can refer to this [official guide](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) or run this command:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+vercel --prod
+```
 
 ## Learn More
 
@@ -28,9 +49,3 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
