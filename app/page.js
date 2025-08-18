@@ -11,7 +11,6 @@ import { NavigationMenu } from "@/components/ui/navigation-menu";
 import { GoogleLogin } from "@react-oauth/google";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Loading } from "@/components/ui/loading";
-import Image from "next/image";
 
 export default function Home() {
   const [alert, setAlert] = useState({
@@ -187,11 +186,10 @@ export default function Home() {
       {alert.visible && (
         <div
           className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs p-3 rounded-lg shadow-lg
-                    ${
-                      alert.variant === "success"
-                        ? "bg-green-500 text-white"
-                        : "bg-red-500 text-white"
-                    }
+                    ${alert.variant === "success"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
+            }
                     animate-slide-down`}
           onClick={() =>
             setAlert({ visible: false, message: "", variant: "default" })
@@ -233,11 +231,23 @@ export default function Home() {
             {/* Display QR Code after login */}
             <div className="mt-6 flex justify-center">
               {user.role == "participant" ? (
-                <Image
-                  src={qrCode}
-                  alt="QR Code"
-                  className="w-64 h-64 border border-gray-300 rounded"
-                />
+                <div className="text-center">
+                  {/* Display QR code image */}
+                  <img
+                    src={qrCode}
+                    alt="QR Code"
+                    className="w-64 h-64 border border-gray-300 rounded"
+                  />
+
+                  {/* Download button */}
+                  <a
+                    href={qrCode}
+                    download="eventloop-qr-code.png"
+                    className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+                  >
+                    Download QR
+                  </a>
+                </div>
               ) : (
                 <></>
               )}
